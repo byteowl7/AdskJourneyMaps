@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href='http://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic,700' rel='stylesheet' type='text/css'>
+    <title>eStore Jounrney</title>
+
+    <link rel="stylesheet" type="text/css" href="dropzone.css">
+
+    <style>
+
+    html,body{
+        width:100%;
+        height:100%;
+        min-height: 100%;
+        margin:0px;
+        padding:0px;
+        position:absolute;
+        background:white;
+        /*zoom: 1.5; 
+        -moz-transform: scale(1.5); */
+    }
+
+
+    #mainNav    {
+        width:100%;
+        padding:10px;
+        box-sizing:border-box;
+        position:fixed;
+        border-bottom:1px solid black;
+        z-index:1000;
+        background:white;
+    }
+
+    .noEvent{
+        pointer-events:none;
+    }
+
+    </style>
+
+</head>
+
+<body>
+    
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="dropzone.js"></script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            // Creates canvas 320 × 200 at 10, 50
+            var paper = Raphael(0, 0, 3000, $(window).height());
+
+            // Creates circle at x = 50, y = 40, with radius 10
+            //var line = paper.path( "M100,0 L30,100 L200,200 L200,300" );
+
+            var ratingArray = [3,4,2,5,1,2,2,4,1,3,5,4,5];
+            var pointArray = [];
+            var circles = [];
+            var texts = [];
+            var painPoints = [0,1,0,0,0,1,1,0,0,0,1,0,1];
+            var keyMoments = [1,0,1,0,0,1,0,0,0,1,0,0,0];
+            var keyCircles = [];
+            var painRects = [];
+            var painTriangles = [];
+
+            //loop through each emotional touchpoint
+            for(var i=0;i<ratingArray.length;i++){
+                var currXPos = i*150+50;
+                var currYPos = ($(window).height()/2)-(ratingArray[i]*50);
+                //Create line function
+                if(i==0){
+                    pointArray.push("M");
+                }
+                else{
+                    pointArray.push("L");
+                }
+                pointArray.push(currXPos);
+                pointArray.push(currYPos);
+                var circle = paper.circle(currXPos, currYPos, 7);
+                circle.attr("stroke", "rgba(255,255,255,.3)");
+                //create the key moment circles
+                if(keyMoments[i] == 1){
+                    var keyCircle = paper.circle(currXPos, currYPos, 30).attr({"fill":"#fff","stroke":"#ddd","stroke-width":2});
+                    keyCircles.push(circle);
+                }
+                else{
+                    keyCircles.push(0);
+                }
+                //create the pain points and text boxes
+                if(painPoints[i] == 1){
+                    texts.push(paper.text(currXPos, currYPos, "!").attr({"fill":"#fff","font-size":20}).toFront());
+                    $(texts[i].node).attr("class","noEvent");
+                    circle.attr("fill", "#f00").attr("r",20);
+                    //Pain Popups
+                    
+                    painRects[i] = paper.rect(currXPos, currYPos+35, 100, 50, 3);
+                    painTriangles[i] = paper.path( ["M",currXPos,currYPos+28,"L",currXPos,currYPos+38,"L",currXPos+10,currYPos+38] );
+                    painRects[i].attr({"fill":"#f00","stroke":"rgba(255,255,255,.3)"});
+                    painTriangles[i].attr({"fill":"#f00","stroke":"none"});
+                    $(painRects[i].node).attr("id","rect"+i);
+                    $(painTriangles[i].node).attr("id","triangle"+i);
+                    $('#rect'+i).hide();
+                    $('#triangle'+i).hide();
+
+                }
+                else{
+                    texts.push(0);
+                    circle.attr("fill", "#ddd");
+                    painRects.push(0);
+                    painTriangles.push(0);
+                }
+                //create the emotional touchpoint circles
+                circles.push(circle);
+                $(circles[i]).attr('id-Num',i);
+            }
+
+
+
+
+            var line = paper.path( pointArray ).attr({"stroke-width":2, "stroke":"#ddd"});
+            line.toBack();
+
+            //move the line to the back, pain points to the front.
+            for(var i=0;i<ratingArray.length;i++){
+                if(painPoints[i]!=0){
+                    circles[i].toFront();
+                }
+                if(texts[i]!=0){
+                    texts[i].toFront();
+                }
+            }
+            // Sets the fill attribute of the circle to red (#f00)
+            
+            for(var i=0; i<ratingArray.length; i++){
+                if(painPoints[i] == 1){
+                var iter = i;
+                var color = circles[i].attr("fill");
+
+                //show text boxes on pain point hover
+                circles[i].hover(function(){
+                    this.attr({"fill": "#d00"});
+                    $('#rect'+$(this).attr('id-Num')).show();
+                    $('#triangle'+$(this).attr('id-Num')).show();
+                    //$('#triangle'+iter).show();
+                  }, function(){
+                    this.attr({"fill": color});
+                    $('#rect'+$(this).attr('id-Num')).hide();
+                    $('#triangle'+$(this).attr('id-Num')).hide();
+                  });
+                }
+            }
+
+        });
+
+
+    </script>
+
+</body>
+
+</html>

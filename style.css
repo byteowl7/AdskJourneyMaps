@@ -1,0 +1,28 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('fonts/icomoon.eot?lm7087');
+	src:url('fonts/icomoon.eot?#iefixlm7087') format('embedded-opentype'),
+		url('fonts/icomoon.ttf?lm7087') format('truetype'),
+		url('fonts/icomoon.woff?lm7087') format('woff'),
+		url('fonts/icomoon.svg?lm7087#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-paniatiLogo:before {
+	content: "\e600";
+}

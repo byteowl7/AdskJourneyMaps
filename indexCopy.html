@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href='http://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic,700' rel='stylesheet' type='text/css'>
+    <title>eStore Jounrney</title>
+
+    <link rel="stylesheet" type="text/css" href="dropzone.css">
+
+    <style>
+
+    html,body{
+        width:100%;
+        height:100%;
+        min-height: 100%;
+        margin:0px;
+        padding:0px;
+        position:absolute;
+        background:white;
+        /*zoom: 1.5; 
+        -moz-transform: scale(1.5); */
+    }
+
+
+    #mainNav    {
+        width:100%;
+        padding:10px;
+        box-sizing:border-box;
+        position:fixed;
+        border-bottom:1px solid black;
+        z-index:1000;
+        background:white;
+    }
+
+    .noEvent{
+        pointer-events:none;
+    }
+
+    #touchpoints{
+        position:absolute;
+        bottom:0px;
+        height:100px;
+        width:100%;
+        left:0px;
+    }
+
+    .tp{
+        width:90px;
+        height:90px;
+        position:absolute;
+        margin-top:5px;
+        background:#ddd;
+        float:left;
+        top:0px;
+    }
+
+    #addTP{
+        width:40px;
+        height:90px;
+        position:absolute;
+        margin-top:5px;
+        background:#eee;
+        text-align:center;
+        line-height:90px;
+        float:left;
+        top:0px;
+    }
+
+    </style>
+
+</head>
+
+<body>
+    
+
+    <div id = "touchpoints"><div id = "addTP">+</div></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="dropzone.js"></script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
+
+
+    <script>
+        $(document).ready(function(){
+            // Creates canvas 320 × 200 at 10, 50
+            var paper = Snap(3000, $(window).height());
+
+            // Creates circle at x = 50, y = 40, with radius 10
+            //var line = paper.path( "M100,0 L30,100 L200,200 L200,300" );
+
+
+        start = function() {
+            this.ox = parseInt(this.attr("cx"));
+            this.oy = parseInt(this.attr("cy"));
+            console.log("Start move, ox=" + this.ox + ", oy=" + this.oy);
+        }
+
+        move = function(dx, dy) {
+            this.attr({"cy": this.oy + dy});
+            
+            for(var i = 0; i<ratingArray.length; i++){
+                if(this == circles[i]){
+                    pointArray[i*2+1] = this.oy + dy;
+                }
+            }
+            
+            /*
+            p1.remove();
+            p1 = paper.polyline(pointArray).attr({
+                stroke: "#000",
+                fill: 'transparent',
+                strokeWidth: 2
+            }).insertBefore(circles[0]);*/
+        }
+
+        stop = function() {
+            this.ox = parseInt(this.attr("cx"));
+            this.oy = parseInt(this.attr("cy"));
+            console.log("Stop move, ox=" + this.ox + ", oy=" + this.oy);
+            emoPath.remove();
+            drawEmotion();
+            emoPath = paper.path(pathString).attr({
+                stroke: "#000",
+                fill: 'transparent',
+                strokeWidth: 2
+            });
+        }
+
+
+
+
+
+
+
+
+            var ratingArray = [3,4,2,5,1,2,2,4,1,3,5,4,5];
+            var pointArray = [];
+            var pointArray2 = [];
+            var circles = [];
+            var painCircles = [];
+            var texts = [];
+            var painPoints = [0,1,0,0,0,1,1,0,0,0,1,0,1];
+            var keyMoments = [1,0,1,0,0,1,0,0,0,1,0,0,0];
+            var keyCircles = [];
+            var painRects = [];
+            var painTriangles = [];
+            var scaleMin = 0;
+            var scaleMax = 0;
+            var scaleSize = 0;
+            var pathString = '';
+
+            for(var i=0;i<ratingArray.length;i++){
+                if(ratingArray[i] < scaleMin){
+                    scaleMin = ratingArray[i];
+                }
+                if(ratingArray[i] > scaleMax){
+                    scaleMax = ratingArray[i];
+                }
+            }
+            scaleSize = scaleMax-scaleMin;
+            console.log(scaleSize);
+            for(var i=0; i<scaleSize; i++){
+                var currH = ($(window).height()/2)-(ratingArray[i]*50);
+                paper.line(0,currH,$(document).width(),currH).attr({
+                    stroke: "#ddd",
+                    fill: 'transparent',
+                    strokeWidth: 1
+                });
+            }
+
+            for(var i=0;i<ratingArray.length;i++){
+                    var currXPos = i*150+50;
+                    var currYPos = ($(window).height()/2)-(ratingArray[i]*50);
+                    var prevYPos = ($(window).height()/2)-(ratingArray[i-1]*50);
+                    pointArray.push(currXPos);
+                    pointArray.push(currYPos);
+                    $("#touchpoints").append('<div class = "tp" style = "left:'+(currXPos-45)+'px;"></div>');
+                    $("#addTP").css('left',($('.tp').last().offset().left+100));
+                    var circle = paper.circle(currXPos, currYPos, 4).attr({
+                        stroke: "#fff",
+                        fill: '#000',
+                        strokeWidth: 2
+                    });
+                    circles.push(circle);
+                    circles[i].drag(move, start, stop);
+                    console.log(painPoints[i]);
+                    if(painPoints[i] == 1){
+                        console.log(i);
+                        var paincircle = paper.circle(currXPos, currYPos, 4).attr({
+                            stroke: "#fff",
+                            fill: '#D22',
+                            strokeWidth: 1
+                        });
+                        painCircles.push(paincircle);
+                    }
+                    
+            }
+
+            function drawEmotion(){
+                for(var i=0;i<ratingArray.length;i++){
+                    var currXPos = pointArray[i*2];
+                    var currYPos = pointArray[i*2+1];
+                    if(i<1){
+                        pathString += "M"+currXPos+","+currYPos;
+                    }else{
+                        var prevYPos = pointArray[(i-1)*2+1];
+                        pathString += "C"+(currXPos-100)+","+prevYPos+","+(currXPos-50)+","+currYPos+","+currXPos+","+currYPos;
+                    }
+                    
+
+                    
+
+                    
+                    
+                }
+            }
+
+            drawEmotion();
+
+
+            /*for(var i=0;i<ratingArray.length;i++){
+                var currXPos = i*150+50;
+                var currYPos = ($(window).height()/2)-(ratingArray[i]*50);
+                var prevYPos = ($(window).height()/2)-(ratingArray[i-1]*50);
+                if(i<1){
+                    pathString += "M"+currXPos+","+currYPos;
+                }else{
+                    pathString += "C"+(currXPos-100)+","+prevYPos+","+(currXPos-50)+","+currYPos+","+currXPos+","+currYPos;
+                }
+                pointArray.push(currXPos);
+                pointArray.push(currYPos);
+                pointArray2.push(currXPos);
+                pointArray2.push(currYPos*1.2);
+
+                var circle = paper.circle(currXPos, currYPos, 4).attr({
+                    stroke: "#fff",
+                    fill: '#000',
+                    strokeWidth: 2,
+                });
+                circles.push(circle);
+                circles[i].drag(move, start, stop);
+
+                $("#touchpoints").append('<div class = "tp" style = "left:'+(currXPos-45)+'px;"></div>');
+                $("#addTP").css('left',($('.tp').last().offset().left+100));
+                
+            }*/
+
+            $("#addTP").css('left',($('.tp').last().offset().left+100));
+
+            $("#addTP").click(function(){
+
+                ratingArray.push(1);
+                var currXPos = (ratingArray.length-1)*150+50;
+                var currYPos = ($(window).height()/2)-(ratingArray[ratingArray.length-1]*50);
+                pointArray.push(currXPos);
+                pointArray.push(currYPos);
+                var circle = paper.circle(currXPos, currYPos, 4).attr({
+                    stroke: "#fff",
+                    fill: '#000',
+                    strokeWidth: 2,
+                });
+                circles.push(circle);
+                circles[ratingArray.length-1].drag(move, start, stop);
+                emoPath.remove();
+                emoPath = paper.polyline(pointArray).attr({
+                    stroke: "#000",
+                    fill: 'transparent',
+                    strokeWidth: 2
+                }).insertBefore(circles[0]);
+                $("#touchpoints").append('<div class = "tp" style = "left:'+(currXPos-45)+'px;"></div>');
+                $("#addTP").css('left',($('.tp').last().offset().left+100));
+            });
+            
+           /*p1 = paper.polyline(pointArray).attr({
+                stroke: "#000",
+                fill: 'transparent',
+                strokeWidth: 2
+            }).insertBefore(circles[0]);*/
+
+           var emoPath = paper.path(pathString).attr({
+                    stroke: "#000",
+                    fill: 'transparent',
+                    strokeWidth: 2
+                });
+            
+
+        });
+
+
+    </script>
+
+</body>
+
+</html>
