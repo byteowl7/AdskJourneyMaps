@@ -61,7 +61,7 @@
         line-height:10px;
         left:0px;
         box-sizing:border-box;
-        padding-left:140px;
+        padding-left:600px;
         font-size:12px;
         text-transform: uppercase;
         white-space:nowrap;
@@ -114,7 +114,7 @@
         line-height:10px;
         left:0px;
         box-sizing:border-box;
-        padding-left:140px;
+        padding-left:600px;
         font-size:12px;
         text-transform: uppercase;
         white-space:nowrap;
@@ -330,10 +330,26 @@
         width:3000px;
         top:450px;
         position:absolute;
+        left:620px;
     }
 
     #thinking{
         width:100%;
+    }
+
+    #intro{
+        width:500px;
+        position:absolute;
+        left:0px;
+        top:0px;
+        height:100%;
+    }
+
+    #pageTitle{
+        font-size:40px;
+        color:white;
+        font-weight:bold;
+        padding:20px;
     }
 
     </style>
@@ -341,6 +357,7 @@
 </head>
 
 <body>
+<div id = "intro"><div id = "pageTitle">eStore Journey Map</div></div>
 <div id = "overlay"><div id = "overlayEmotion"><div id = "emotion"></div></div><div id = "overlayScroll"><div class = "overlayTouchpoint"></div></div></div>
 <div id = "stages"><div class = "col-6">BEFORE PURCHASE</div><div class = "col-4">DURING PURCHASE</div><div class = "col-3">AFTER PURCHASE</div></div>
 <div id = "steps"><div class = "col-3">Navigating to eStore</div><div class = "col-2">Choosing Products</div><div class = "col-1">Verifying Product Choices</div><div class = "col-3">Completing Purchase</div><div class = "col-2">Navigating to Download</div><div class = "col-2">Download & Installation</div></div>
@@ -455,7 +472,7 @@
 
             for(var i=0;i<ratingArray.length;i++){
                     //x,y position of emotional points
-                    var currXPos = i*150+200;
+                    var currXPos = i*150+50;
                     var currYPos = (scaleSize*50+150)-(ratingArray[i]*50);
                     var prevYPos = (scaleSize*50+150)-(ratingArray[i-1]*50);
                     pointArray.push(currXPos);
@@ -697,6 +714,9 @@
 
                 }
             });
+
+            $('svg').css('margin-left','600px');
+
         });
 
 
